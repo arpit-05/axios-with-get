@@ -1,26 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from "axios"
+import UserForm from "./components/UserForm"
+class App extends React.Component{
+  state={
+    repos:null
+  }
+  getUser=(e)=>{
+    e.preventDefault() 
+    const user=e.target.elements.username.value
+    //console.log(user)
+    axios.get(`https://api.github.com/users/${user}`)
+    .then((res)=>{
+      //console.log(res)
+      const repos=res.data.public_repos
+      this.setState({repos:repos})
+      console.log(repos)
+    })
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  }
+  render(){
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>HTTP Calls in React</h1>
+        </header>
+        <UserForm getUser={this.getUser}/>
+        {this.state.repos?<p>Number of repos :{this.state.repos}</p> : <p>Please enter username</p>}
+      </div>
+    );
+  }
+ 
 }
 
 export default App;
